@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // This file takes the settings from config.h and creates all of the definitions needed for the rest of the code.
 
 // set control board dependant defines here
+// ======================================================= HUBSAN H107L ===============================================================
 #if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
 
 #define GYRO_TYPE MPU3050       // gyro
@@ -69,25 +70,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // LED Outputs (4)
 // LEDs 1 & 3 are tied together
 // LEDs 2 & 4 are tied together
-#define LED1_OUTPUT (DIGITALPORT3 | 0)
-#define LED1_ON DIGITALOFF
+#ifdef LED1
+	#define LED1_OUTPUT (DIGITALPORT3 | 0)
+	#define LED1_ON DIGITALOFF
+#endif
 
-#define LED2_OUTPUT	(DIGITALPORT0 | 4)
-#define LED2_ON DIGITALOFF
+#ifdef LED2
+	#define LED2_OUTPUT	(DIGITALPORT0 | 4)
+	#define LED2_ON DIGITALOFF
+#endif
 
-#define LED3_OUTPUT LED1_OUTPUT
-#define LED3_ON LED1_ON
+#ifdef LED3
+	#define LED3_OUTPUT LED1_OUTPUT
+	#define LED3_ON LED1_ON
+#endif
 
-#define LED4_OUTPUT	LED2_OUTPUT
-#define LED4_ON LED2_ON
+#ifdef LED4
+	#define LED4_OUTPUT	LED2_OUTPUT
+	#define LED4_ON LED2_ON
+#endif
 
-#define LED5_OUTPUT	(DIGITALPORT5 | 2)
-#define LED5_ON DIGITALON
+#ifdef LED5
+	#define LED5_OUTPUT	(DIGITALPORT5 | 2)
+	#define LED5_ON DIGITALON
+#endif
 
-#define LED6_OUTPUT (DIGITALPORT2 | 6)
-#define LED6_ON DIGITALON
+#ifdef LED6
+	#define LED6_OUTPUT (DIGITALPORT2 | 6)
+	#define LED6_ON DIGITALON
+#endif
+
 // end of Hubsan X4 defs
 
+// ======================================================= WLT V202 ===============================================================
 #elif CONTROL_BOARD_TYPE == CONTROL_BOARD_WLT_V202
 
 #define GYRO_TYPE MPU6050       // gyro
@@ -127,10 +142,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 // LED Outputs
-#define LED1_OUTPUT (DIGITALPORT0 | 0)
-#ifndef LED1_ON
-#define LED1_ON DIGITALON
+#ifdef LED1
+	#define LED1_OUTPUT (DIGITALPORT0 | 0)
+	#ifndef LED1_ON
+		#define LED1_ON DIGITALON
 #endif
+
+#define LED_NONE 0x00
+#define LED_ALL LED1
+
+// ======================================================= JXD 385 ===============================================================
 
 #elif CONTROL_BOARD_TYPE == CONTROL_BOARD_JXD_JD385
 
@@ -170,10 +191,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOTORS_STOP NO
 #endif
 
-// LED Outputs
-#define LED1_OUTPUT (DIGITALPORT0 | 0)
-#ifndef LED1_ON
-#define LED1_ON DIGITALON
+// LED Outputs (2)
+// LEDs 1 & 3 are tied together
+// LEDs 2 & 4 are tied together
+#ifdef LED1
+	#define LED1_OUTPUT (DIGITALPORT0 | 0)
+	#define LED1_ON DIGITALOFF
+#endif
+
+#ifdef LED2
+	#define LED2_OUTPUT	(DIGITALPORT5 | 2) // These LEDs are not populated on the PCB
+	#define LED2_ON DIGITALOFF
+#endif
+
+#ifdef LED3
+	#define LED3_OUTPUT LED1_OUTPUT
+	#define LED3_ON LED1_ON
+#endif
+
+#ifdef LED4
+	#define LED4_OUTPUT	LED2_OUTPUT
+	#define LED4_ON LED2_ON
+#endif
 #endif
 
 #else // all other control boards
@@ -201,13 +240,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RXNUMCHANNELS 8
 
 // LED Outputs
-#define LED1_OUTPUT (DIGITALPORTB | 3)
-#ifndef LED1_ON
-#define LED1_ON DIGITALON
+#ifdef LED1
+	#define LED1_OUTPUT (DIGITALPORTB | 3)
+		#ifndef LED1_ON
+		#define LED1_ON DIGITALON
+	#endif
 #endif
-#define LED2_OUTPUT (DIGITALPORTB | 4)
-#ifndef LED2_ON
-#define LED2_ON DIGITALON
+
+#ifdef LED2
+	#define LED2_OUTPUT (DIGITALPORTB | 4)
+		#ifndef LED2_ON
+		#define LED2_ON DIGITALON
+	#endif
 #endif
 
 #endif // CONTROL_BOARD_TYPE

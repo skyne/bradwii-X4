@@ -63,19 +63,3 @@ void x4_set_usersettings()
     //usersettings.checkboxconfiguration[CHECKBOXHIGHANGLE] = CHECKBOXMASKAUX1LOW; // uncomment for high angle
 }
 
-void x4_init_leds()
-{
-    lib_digitalio_initpin(LED1_OUTPUT, DIGITALOUTPUT);	
-    lib_digitalio_initpin(LED2_OUTPUT, DIGITALOUTPUT);
-    lib_digitalio_initpin(LED5_OUTPUT, DIGITALOUTPUT);
-    lib_digitalio_initpin(LED6_OUTPUT, DIGITALOUTPUT);
-}
-
-void x4_set_leds(unsigned char state)
-{
-    lib_digitalio_setoutput( LED1_OUTPUT , (state & 0x01) ? LED1_ON : !LED1_ON);
-	lib_digitalio_setoutput( LED2_OUTPUT , (state & 0x02) ? LED2_ON : !LED2_ON);
-	lib_digitalio_setoutput( LED5_OUTPUT , (state & 0x04) ? LED5_ON : !LED5_ON);
- 	lib_digitalio_setoutput( LED6_OUTPUT , (state & 0x08) ? LED6_ON : !LED6_ON);
-}
-

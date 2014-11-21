@@ -64,11 +64,12 @@ m
 // library headers
 #include "hal.h"
 #include "lib_timers.h"
+// #if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
 #include "lib_serial.h"
 #include "lib_i2c.h"
 #include "lib_digitalio.h"
 #include "lib_fp.h"
-#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
 #include "lib_adc.h"
 #endif
 
@@ -87,6 +88,7 @@ m
 #include "navigation.h"
 #include "pilotcontrol.h"
 #include "autotune.h"
+#include "leds.h"
 
 // Data type for stick movement detection to execute accelerometer calibration
 typedef enum stickstate_tag {
@@ -106,12 +108,12 @@ fixedpointnum integratedangleerror[3];
 // limit pid windup
 #define INTEGRATEDANGLEERRORLIMIT FIXEDPOINTCONSTANT(1000)
 
-#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
-// Factor from ADC input voltage to battery voltage
-#define FP_BATTERY_VOLTAGE_FACTOR FIXEDPOINTCONSTANT(BATTERY_VOLTAGE_FACTOR)
+#ifdef ADC_USE
+	// Factor from ADC input voltage to battery voltage
+	#define FP_BATTERY_VOLTAGE_FACTOR FIXEDPOINTCONSTANT(BATTERY_VOLTAGE_FACTOR)
 
-// If battery voltage gets below this value the LEDs will blink
-#define FP_BATTERY_UNDERVOLTAGE_LIMIT FIXEDPOINTCONSTANT(BATTERY_UNDERVOLTAGE_LIMIT)
+	// If battery voltage gets below this value the LEDs will blink
+	#define FP_BATTERY_UNDERVOLTAGE_LIMIT FIXEDPOINTCONSTANT(BATTERY_UNDERVOLTAGE_LIMIT)
 #endif
 
 // Stick is moved out of middle position towards low
@@ -130,7 +132,8 @@ static void detectstickcommand(void);
 // It all starts here:
 int main(void)
 {
-#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
+
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
     // Static to keep it off the stack
     static bool isbatterylow;         // Set to true while voltage is below limit
     static bool isadcchannelref;      // Set to true if the next ADC result is reference channel
@@ -144,10 +147,11 @@ int main(void)
     // because the specified tolerance for this is pretty high.
     static fixedpointnum initialbandgapvoltage;
 #endif
+	
     static bool isfailsafeactive;     // true while we don't get new data from transmitter
 
     // initialize hardware
-	lib_hal_init();
+		lib_hal_init();
 
     // start with default user settings in case there's nothing in eeprom
     defaultusersettings();
@@ -155,61 +159,66 @@ int main(void)
     // try to load usersettings from eeprom
     readusersettingsfromeeprom();
 
-    // set our LED as a digital output
-    lib_digitalio_initpin(LED1_OUTPUT, DIGITALOUTPUT);
-
     //initialize the libraries that require initialization
     lib_timers_init();
     lib_i2c_init();
-
-#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
-    // extras init for Hubsan X4
-    x4_init_leds();
+	
+		//initialize the leds
+		leds_init();
+		
+		
+		//lib_digitalio_setoutput( LED1_OUTPUT, !LED1_ON);
+		leds_blink_fixed(LED1, 500, 500, 8);
+	
     if(!global.usersettingsfromeeprom) {
         // If nothing found in EEPROM (= data flash on Mini51)
         // use default X4 settings.
+#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
         x4_set_usersettings();
+#endif
         // Indicate that default settings are used and accelerometer
         // calibration will be executed (4 long LED blinks)
-        for(uint8_t i=0;i<4;i++) {
-            x4_set_leds(X4_LED_ALL);
-            lib_timers_delaymilliseconds(500);
-            x4_set_leds(X4_LED_NONE);
-            lib_timers_delaymilliseconds(500);
-        }
+       	leds_blink_fixed(LED1, LED_BLINK_FAST, LED_BLINK_FAST, 4);
     }
-#endif
+
 	
     // pause a moment before initializing everything. To make sure everything is powered up
     lib_timers_delaymilliseconds(100); 
 		
     // initialize all other modules
     initrx();
-#if (CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L)
+		
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
     // Give the battery voltage lowpass filter a reasonable starting point.
     global.batteryvoltage = FP_BATTERY_UNDERVOLTAGE_LIMIT;
     lib_adc_init();  // For battery voltage
 #endif
-    initoutputs();
-#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
+   
+		initoutputs();
+
+		#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
     serialinit();
 #endif
+
     initgyro();
     initacc();
+
 #if (BAROMETER_TYPE != NO_BAROMETER)
     initbaro();
 #endif
+
 #if (COMPASS_TYPE != NO_COMPASS)
     initcompass();
 #endif
+
 #if (GPS_TYPE != NO_GPS)
     initgps();
 #endif
-    initimu();
+    
+		initimu();
 
-#if (CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L)
-    x4_set_leds(X4_LED_ALL);
-    // Measure internal bandgap voltage now.
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
+		// Measure internal bandgap voltage now.
     // Battery is probably full and there is no load,
     // so we can expect to have a good external ADC reference
     // voltage now.
@@ -226,7 +235,7 @@ int main(void)
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-    lib_adc_select_channel(LIB_ADC_CHAN5);
+    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
     lib_adc_startconv();
 #endif
 
@@ -236,7 +245,7 @@ int main(void)
     global.armed = 0;
     global.navigationmode = NAVIGATIONMODEOFF;
     global.failsafetimer = lib_timers_starttimer();
-
+		
     for (;;) {
 
         // check to see what switches are activated
@@ -297,16 +306,17 @@ int main(void)
 
         // read the receiver
         readrx();
-
-        // Hubsan X4 has its own LED management
-#if (CONTROL_BOARD_TYPE != CONTROL_BOARD_HUBSAN_H107L)
-        // turn on the LED when we are stable and the gps has 5 satellites or more
+		
+	        // turn on the LED when we are stable and the gps has 5 satellites or more
 #if (GPS_TYPE==NO_GPS)
-        lib_digitalio_setoutput(LED1_OUTPUT, (global.stable == 0) ? (!LED1_ON) : LED1_ON);
-#else
-        lib_digitalio_setoutput(LED1_OUTPUT, (!(global.stable && global.gps_num_satelites >= 5)) == LED1_ON);
+#if (GPS_LED != NONE)
+				leds_set(((global.stable == 0) ? (!GPS_LED) : GPS_LED));
 #endif
-#endif // Not Hubsan
+#else
+#if (LED_GPS != NONE)				
+        leds_set((!(global.stable && global.gps_num_satelites >= 5)) == GPS_LED);
+#endif
+#endif
 
         // get the angle error.  Angle error is the difference between our current attitude and our desired attitude.
         // It can be set by navigation, or by the pilot, etc.
@@ -532,7 +542,7 @@ int main(void)
 #endif // QUADX config
         }
 
-#if (CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L)
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
         // Measure battery voltage
         if(!lib_adc_is_busy())
         {
@@ -542,7 +552,7 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(LIB_ADC_CHAN5);
+                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
             } else {
                 batteryvoltageraw = lib_adc_read_raw();
                 isadcchannelref = true;
@@ -560,9 +570,11 @@ int main(void)
                 // Apply 0.5 second lowpass filter.
                 // Use constant FIXEDPOINTONEOVERONEFOURTH instead of FIXEDPOINTONEOVERONEHALF
                 // Because we call this only every other iteration.
-                // (...alternatively multiply global.timesliver by two).
-                lib_fp_lowpassfilter(&(global.batteryvoltage), batteryvoltage, global.timesliver, FIXEDPOINTONEOVERONEFOURTH, TIMESLIVEREXTRASHIFT);
-                // Update state of isbatterylow flag.
+                // (...alternatively multiply global.timesliver by two).      
+								lib_fp_lowpassfilter(&(global.batteryvoltage), batteryvoltage, global.timesliver, FIXEDPOINTONEOVERONEFOURTH, TIMESLIVEREXTRASHIFT);
+                
+	
+							  // Update state of isbatterylow flag.
                 if(global.batteryvoltage < FP_BATTERY_UNDERVOLTAGE_LIMIT)
                     isbatterylow = true;
                 else
@@ -576,33 +588,35 @@ int main(void)
         if(isbatterylow) {
             // Highest priority: Battery voltage
             // Blink all LEDs slow
-            if(lib_timers_gettimermicroseconds(0) % 500000 > 250000)
-                x4_set_leds(X4_LED_ALL);
-            else
-                x4_set_leds(X4_LED_NONE);
+					#warning "Removed for testing!"
+					 // leds_blink_continuous(LED_ALL, 1000, 500);
         }
-        else if(isfailsafeactive) {
+#endif 
+				
+#if (BATTERY_ADC_CHANNEL == NO_ADC)				
+        if(isfailsafeactive) {
+#else
+				else if(isfailsafeactive) {
+#endif					
             // Lost contact with TX
             // Blink LEDs fast alternating
-            if(lib_timers_gettimermicroseconds(0) % 250000 > 120000)
-                x4_set_leds(X4_LED_FR | X4_LED_RL);
-            else
-                x4_set_leds(X4_LED_FL | X4_LED_RR);
+						leds_blink_continuous(LED_ALL, 250, 120);
         }
         else if(!global.armed) {
+
             // Not armed
             // Short blinks
-            if(lib_timers_gettimermicroseconds(0) % 500000 > 450000)
-                x4_set_leds(X4_LED_ALL);
-            else
-                x4_set_leds(X4_LED_NONE);
-        }
+						// leds_blink_continuous(LED_ALL, 500, 450);
+						if(lib_timers_gettimermicroseconds(0) % 500000 > 450000 )
+								leds_set(LED_NONE);
+						else
+								leds_set(LED_ALL);
+						}
         else {
             // LEDs stay on
-            x4_set_leds(X4_LED_ALL);
+            leds_set(LED_ALL);
         }
-
-#endif
+				
     } // Endless loop
 } // main()
 

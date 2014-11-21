@@ -177,3 +177,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Uncomment if using DC motors
 //#define DC_MOTORS
+
+// Parameters for leds_set()
+// LED Outputs
+
+#define LED1 0x01
+//#define LED2 0x02
+//#define LED3 0x04
+//#define LED4 0x08
+//#define LED5 0x10
+//#define LED6 0x20
+
+// If LEDS shall indicate GPS link status
+// #define LED_GPS

@@ -25,7 +25,8 @@ extern globalstruct global;
 
 void writeusersettingstoeeprom(void)
 {
-#ifdef X4_BUILD  // this was commented out for the other models
+#ifdef X4_BUILD 
+#elif JD385_BUILD  // this was commented out for the other models
     uint16_t magicnumber = MAGICNUMBER;
     int16_t size = sizeof(usersettingsstruct);
     uint16_t index = 0;
@@ -40,7 +41,8 @@ void writeusersettingstoeeprom(void)
 
 void readusersettingsfromeeprom(void)
 {
-#ifdef X4_BUILD  // this was commented out for the other models
+#ifdef X4_BUILD
+#elif JD385_BUILD  // this was commented out for the other models
     uint16_t magicnumber = 0;
     int16_t size = 0;
     uint16_t index = 0;

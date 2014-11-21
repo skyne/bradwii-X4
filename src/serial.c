@@ -295,9 +295,17 @@ void evaluatecommand(char portnumber, unsigned char *data)
         data++;                 // thrMid8
         data++;                 // thrExpo8
         sendgoodheader(portnumber, 0);
-    }
-
-    else                        // we don't know this command
+    
+		#if (BATTERY_ADC_CHANNEL != NO_ADC)
+    } else if (command == MSP_BAT) { // Send Battery Voltage
+			sendgoodheader(portnumber, 1);
+		#warning "Fixed value for testing!"	
+		sendandchecksumcharacter(portnumber, 40);	
+		//Not sure about this!
+		//			sendandchecksumcharacter(portnumber, global.batteryvoltage << FIXEDPOINTSHIFT);
+		#endif
+		}
+			else                        // we don't know this command
     {
         senderrorheader(portnumber);
     }

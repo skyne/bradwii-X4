@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "baro.h"
 #include "imu.h"
 #include "compass.h"
+#include "leds.h"
 
 extern globalstruct global;
 extern usersettingsstruct usersettings;
@@ -94,23 +95,26 @@ void calibrategyroandaccelerometer(bool both)
 
         calculatetimesliver();
         totaltime += global.timesliver;
+				
 #ifdef X4_BUILD
         // Rotating LED pattern
         ledstatus = (uint8_t)((totaltime >> (FIXEDPOINTSHIFT+TIMESLIVEREXTRASHIFT-3))& 0x3);
         switch(ledstatus) {
         case 0:
-            x4_set_leds(X4_LED_FL);
+            leds_set(LED1); // X4_LED_FL
             break;
         case 1:
-            x4_set_leds(X4_LED_FR);
+            leds_set(LED2); // X4_LED_FR
             break;
         case 2:
-            x4_set_leds(X4_LED_RR);
+            leds_set(LED5); // X4_LED_RR
             break;
         case 3:
-            x4_set_leds(X4_LED_RL);
+            leds_set(LED6); // X4_LED_RL
             break;
         }
+#else
+				leds_blink_continuous(LED_ALL, 100, 100);				
 #endif
         for (int x = 0; x < 3; ++x) {
             lib_fp_lowpassfilter(&usersettings.gyrocalibration[x], -global.gyrorate[x], global.timesliver, FIXEDPOINTONEOVERONE, TIMESLIVEREXTRASHIFT);
