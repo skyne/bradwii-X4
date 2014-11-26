@@ -180,8 +180,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DC_MOTORS
 
 // Uncomment the following line iy you want to use the ADC to monitor the battery voltage
-#define BATTERY_ADC_CHANNEL LIB_ADC_CHAN5
-// #define BATTERY_ADC_CHANNEL NO_ADC
+// #define BATTERY_ADC_CHANNEL LIB_ADC_CHAN5
+ #define BATTERY_ADC_CHANNEL NO_ADC
 // #define BATTERY_ADC_CHANNEL LIB_ADC_CHAN1
 
 // ADC external reference voltage.
@@ -221,11 +221,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Unit: Volt
 #define BATTERY_UNDERVOLTAGE_LIMIT 3.2
 
-
 // Parameters for leds
 // define the number of LEDs use on the copter otherwise define NO_LEDS
 // #define LEDS NO_LEDS
-#define LEDS 2
+#define LEDS 1
 
 // LED Outputs (1)
 // LEDs FL & FR are tied together
@@ -233,14 +232,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // To use the additional LEDs following parts have to be soldern on the PCB:
 // On the free pads on the PCB a transistor ?PNP? + series resistor
 // and 2x LEDs plus 2x 10Ohms series resistor have to be added.
-#define LED1 0x01
-#define LED2 0x02
-// #define LED3 0x04
-// #define LED4 0x08
-// #define LED5 0x10
-// #define LED6 0x20
-// #define LED7 0x40
-// #define LED8 0x80
+#define LED1 LED1_STATE			//0x01
+// #define LED2 LED2_STATE 		//0x02
+// #define LED3 LED3_STATE 	//0x04
+// #define LED4 LED4_STATE	//0x08
+// #define LED5 LED5_STATE	//0x10
+// #define LED6 LED6_STATE	//0x20
+// #define LED7 LED7_STATE  //0x40
+// #define LED8 LED8_STATE	//0x80
 
 // If a LED shall indicate GPS link status define GPS LED over here
 #define GPS_LED NONE

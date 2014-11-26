@@ -133,6 +133,8 @@ static void detectstickcommand(void);
 int main(void)
 {
 
+
+	
 #if (BATTERY_ADC_CHANNEL != NO_ADC)
     // Static to keep it off the stack
     static bool isbatterylow;         // Set to true while voltage is below limit
@@ -164,12 +166,8 @@ int main(void)
     lib_i2c_init();
 	
 		//initialize the leds
-		leds_init();
+		leds_init();		
 		
-		
-		//lib_digitalio_setoutput( LED1_OUTPUT, !LED1_ON);
-		leds_blink_fixed(LED1, 500, 500, 8);
-	
     if(!global.usersettingsfromeeprom) {
         // If nothing found in EEPROM (= data flash on Mini51)
         // use default X4 settings.
@@ -588,8 +586,7 @@ int main(void)
         if(isbatterylow) {
             // Highest priority: Battery voltage
             // Blink all LEDs slow
-					#warning "Removed for testing!"
-					 // leds_blink_continuous(LED_ALL, 1000, 500);
+						leds_blink_continuous(LED_ALL, 1000, 500);
         }
 #endif 
 				
@@ -606,11 +603,7 @@ int main(void)
 
             // Not armed
             // Short blinks
-						// leds_blink_continuous(LED_ALL, 500, 450);
-						if(lib_timers_gettimermicroseconds(0) % 500000 > 450000 )
-								leds_set(LED_NONE);
-						else
-								leds_set(LED_ALL);
+						leds_blink_continuous(LED_ALL, 500, 450);
 						}
         else {
             // LEDs stay on

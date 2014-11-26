@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lib_timers.h"
 
 
-
+// if LED is defined set the according output from defs.s to according IO Pin
 
 void leds_init()
 {
@@ -59,6 +59,8 @@ void leds_init()
 
 }
 
+// according to the state, switch the led on or off
+
 void leds_set(unsigned char state)
 {
 	#ifdef LED1
@@ -95,6 +97,9 @@ void leds_set(unsigned char state)
 
 }
 
+
+// blink the LEDs a specified amount of cycles
+
 void leds_blink_fixed(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles)
 {
 	for(uint8_t i=0;i<cycles;i++) {
@@ -105,6 +110,8 @@ void leds_blink_fixed(unsigned char state, unsigned int on_time, unsigned int of
 	}							
 }
 
+// switch the LEDs according to the timer, the function have to be called if the programm is running in a loop
+// 
 void leds_blink_continuous(unsigned char state, unsigned int on_time, unsigned int off_time) {
 	if(lib_timers_gettimermicroseconds(0) % (on_time * 1000) > (off_time * 1000) )
 			leds_set(~state);
