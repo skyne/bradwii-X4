@@ -245,3 +245,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define GPS_LED NONE
 // #define GPS_LED LED1
 // #define GPS_LED LED2
+
+// Default Config MultiWii
+// set default acro mode rotation rates
+#define USERSETTINGS_MAXYAWRATE  600L << FIXEDPOINTSHIFT  					// degrees per second
+#define USERSETTINGS_MAXPITCHANDROLLRATE  400L << FIXEDPOINTSHIFT 	// degrees per second
+
+// set default PID settings
+// pitch PIDs
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX 35L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX 4L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX 22L << 2    													// 8 on configurator
+
+// roll PIDs
+#define USERSETTINGS_PID_PGAIN_ROLLINDEX 35L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_ROLLINDEX 4L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_ROLLINDEX 22L << 2
+
+// yaw PIDs
+#define USERSETTINGS_PID_PGAIN_YAWINDEX 30L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_YAWINDEX 0L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_YAWINDEX 22L << 2
+
+//
+#define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX 27L << 7   						// 2.7 on configurator
+#define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX 6L << 9    						// 6 on configurator
+#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX 25L << 11   				// 2.5 on configurator
+#define USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX 188L << 8   				// .188 on configurator
+
+// Checkbox settings...
+// #define USERSETTINGS_CHECKBOXARM CHECKBOXMASKAUX1HIGH
+// #define USERSETTINGS_CHECKBOXAUTOTHROTTLE
+// #define USERSETTINGS_CHECKBOXALTHOLD
+// #define USERSETTINGS_CHECKBOXCOMPASS
+// #define USERSETTINGS_CHECKBOXPOSITIONHOLD
+// #define USERSETTINGS_CHECKBOXRETURNTOHOME
+#define USERSETTINGS_CHECKBOXSEMIACRO CHECKBOXMASKAUX1HIGH
+// #define USERSETTINGS_CHECKBOXFULLACRO
+#define USERSETTINGS_CHECKBOXHIGHRATES CHECKBOXMASKAUX1HIGH
+// #define USERSETTINGS_CHECKBOXHIGHANGLE CHECKBOXMASKAUX1LOW
+#define USERSETTINGS_CHECKBOXAUTOTUNE CHECKBOXMASKAUX2HIGH
+// #define USERSETTINGS_CHECKBOXUNCRASHABLE
+// #define USERSETTINGS_CHECKBOXHEADFREE
+// #define USERSETTINGS_CHECKBOXYAWHOLD
+
+

@@ -23,8 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "options.h"
 
-void x4_set_usersettings(void);
-
 // Choose your control board:
 //#define CONTROL_BOARD_TYPE CONTROL_BOARD_HK_MULTIWII_PRO_2
 //#define CONTROL_BOARD_TYPE CONTROL_BOARD_HK_MULTIWII_328P
@@ -227,12 +225,58 @@ void x4_set_usersettings(void);
 
 
 // Use of LEDs
-#define LED1 0x01
-#define LED2 0x02
-#define LED3 0x04
-#define LED4 0x08
-#define LED5 0x10
-#define LED6 0x20
+#define LED1 LED1_STATE			//0x01
+#define LED2 LED2_STATE 		//0x02
+#define LED3 LED3_STATE 	//0x04
+#define LED4 LED4_STATE	//0x08
+#define LED5 LED5_STATE	//0x10
+#define LED6 LED6_STATE	//0x20
+// #define LED7 LED7_STATE  //0x40
+// #define LED8 LED8_STATE	//0x80
 
 // If LEDS shall indicate GPS link status
 // #define LED_GPS
+
+// Default Config MultiWii
+// set default acro mode rotation rates
+#define USERSETTINGS_MAXYAWRATE  600L << FIXEDPOINTSHIFT  					// degrees per second
+#define USERSETTINGS_MAXPITCHANDROLLRATE  400L << FIXEDPOINTSHIFT 	// degrees per second
+
+// set default PID settings
+// pitch PIDs
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX 35L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX 4L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX 22L << 2    													// 8 on configurator
+
+// roll PIDs
+#define USERSETTINGS_PID_PGAIN_ROLLINDEX 35L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_ROLLINDEX 4L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_ROLLINDEX 22L << 2
+
+// yaw PIDs
+#define USERSETTINGS_PID_PGAIN_YAWINDEX 30L << 3   													// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_YAWINDEX 0L 																	// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_YAWINDEX 22L << 2
+
+//
+#define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX 27L << 7;   						// 2.7 on configurator
+#define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX 6L << 9;    						// 6 on configurator
+#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX 25L << 11;   				// 2.5 on configurator
+#define USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX 188L << 8;   				// .188 on configurator
+
+
+// Checkbox settings...
+// #define USERSETTINGS_CHECKBOXARM CHECKBOXMASKAUX1HIGH
+// #define USERSETTINGS_CHECKBOXAUTOTHROTTLE
+// #define USERSETTINGS_CHECKBOXALTHOLD
+// #define USERSETTINGS_CHECKBOXCOMPASS
+// #define USERSETTINGS_CHECKBOXPOSITIONHOLD
+// #define USERSETTINGS_CHECKBOXRETURNTOHOME
+#define USERSETTINGS_CHECKBOXSEMIACRO CHECKBOXMASKAUX1HIGH
+// #define USERSETTINGS_CHECKBOXFULLACRO
+#define USERSETTINGS_CHECKBOXHIGHRATES CHECKBOXMASKAUX1HIGH
+#define USERSETTINGS_CHECKBOXHIGHANGLE CHECKBOXMASKAUX1LOW
+#define USERSETTINGS_CHECKBOXAUTOTUNE CHECKBOXMASKAUX2HIGH
+// #define USERSETTINGS_CHECKBOXUNCRASHABLE
+// #define USERSETTINGS_CHECKBOXHEADFREE
+// #define USERSETTINGS_CHECKBOXYAWHOLD

@@ -180,13 +180,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Parameters for leds_set()
 // LED Outputs
-
-#define LED1 0x01
-//#define LED2 0x02
-//#define LED3 0x04
-//#define LED4 0x08
-//#define LED5 0x10
-//#define LED6 0x20
+#define LED1 LED1_STATE			//0x01
+// #define LED2 LED2_STATE 		//0x02
+// #define LED3 LED3_STATE 	//0x04
+// #define LED4 LED4_STATE	//0x08
+// #define LED5 LED5_STATE	//0x10
+// #define LED6 LED6_STATE	//0x20
+// #define LED7 LED7_STATE  //0x40
+// #define LED8 LED8_STATE	//0x80
 
 // If LEDS shall indicate GPS link status
 // #define LED_GPS

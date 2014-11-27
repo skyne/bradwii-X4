@@ -132,8 +132,6 @@ static void detectstickcommand(void);
 // It all starts here:
 int main(void)
 {
-
-
 	
 #if (BATTERY_ADC_CHANNEL != NO_ADC)
     // Static to keep it off the stack
@@ -155,12 +153,6 @@ int main(void)
     // initialize hardware
 		lib_hal_init();
 
-    // start with default user settings in case there's nothing in eeprom
-    defaultusersettings();
-    
-    // try to load usersettings from eeprom
-    readusersettingsfromeeprom();
-
     //initialize the libraries that require initialization
     lib_timers_init();
     lib_i2c_init();
@@ -168,15 +160,20 @@ int main(void)
 		//initialize the leds
 		leds_init();		
 		
+		// start with default user settings in case there's nothing in eeprom
+		defaultusersettings();		
+    
+    // try to load usersettings from eeprom
+    readusersettingsfromeeprom();
+
     if(!global.usersettingsfromeeprom) {
-        // If nothing found in EEPROM (= data flash on Mini51)
-        // use default X4 settings.
-#if CONTROL_BOARD_TYPE == CONTROL_BOARD_HUBSAN_H107L
-        x4_set_usersettings();
-#endif
-        // Indicate that default settings are used and accelerometer
-        // calibration will be executed (4 long LED blinks)
-       	leds_blink_fixed(LED1, LED_BLINK_FAST, LED_BLINK_FAST, 4);
+			// If nothing found in EEPROM (= data flash on Mini51)
+			// use default settings.
+			// start with default user settings in case there's nothing in eeprom
+			defaultusersettings();
+		
+			// Indicate that default settings are used
+			leds_blink_fixed(LED1, 50, 50, 10);
     }
 
 	
@@ -630,40 +627,134 @@ void defaultusersettings(void)
     global.usersettingsfromeeprom = 0;  // this should get set to one if we read from eeprom
 
     // set default acro mode rotation rates
-    usersettings.maxyawrate = 400L << FIXEDPOINTSHIFT;  // degrees per second
-    usersettings.maxpitchandrollrate = 400L << FIXEDPOINTSHIFT; // degrees per second
+    usersettings.maxyawrate = USERSETTINGS_MAXYAWRATE;  // degrees per second      
+    usersettings.maxpitchandrollrate = USERSETTINGS_MAXPITCHANDROLLRATE; // degrees per second
 
     // set default PID settings
-    for (int x = 0; x < 3; ++x) {
+		for (int x = 0; x < 3; ++x) {
         usersettings.pid_pgain[x] = 15L << 3;   // 1.5 on configurator
-        usersettings.pid_igain[x] = 8L; // .008 on configurator
-        usersettings.pid_dgain[x] = 8L << 2;    // 8 on configurator
+        usersettings.pid_igain[x] = 4L; 				// .008 on configurator
+        usersettings.pid_dgain[x] = 8L << 2;   // 8 on configurator        
     }
 
-    usersettings.pid_pgain[YAWINDEX] = 30L << 3;        // 3 on configurator
+		// pitch PIDs
+#ifdef USERSETTINGS_PID_PGAIN_PITCHINDEX
+    usersettings.pid_pgain[PITCHINDEX] = USERSETTINGS_PID_PGAIN_PITCHINDEX;
+#endif
+#ifdef USERSETTINGS_PID_IGAIN_PITCHINDEX
+    usersettings.pid_igain[PITCHINDEX] = USERSETTINGS_PID_IGAIN_PITCHINDEX;
+#endif
+#ifdef USERSETTINGS_PID_DGAIN_PITCHINDEX
+    usersettings.pid_dgain[PITCHINDEX] = USERSETTINGS_PID_DGAIN_PITCHINDEX;
+#endif
+		
+ // roll PIDs
+#ifdef USERSETTINGS_PID_PGAIN_ROLLINDEX		
+    usersettings.pid_pgain[ROLLINDEX] = USERSETTINGS_PID_PGAIN_ROLLINDEX;
+#endif
+#ifdef USERSETTINGS_PID_IGAIN_ROLLINDEX
+    usersettings.pid_igain[ROLLINDEX] = USERSETTINGS_PID_IGAIN_ROLLINDEX;
+#endif
+#ifdef USERSETTINGS_PID_DGAIN_ROLLINDEX
+    usersettings.pid_dgain[ROLLINDEX] = USERSETTINGS_PID_DGAIN_ROLLINDEX;	
+#endif
+	
+	
+    // yaw PIDs
+#ifdef USERSETTINGS_PID_PGAIN_YAWINDEX
+    usersettings.pid_pgain[YAWINDEX] = USERSETTINGS_PID_PGAIN_YAWINDEX;
+#elif
+		usersettings.pid_pgain[YAWINDEX] = 30L << 3;
+#endif
+#ifdef USERSETTINGS_PID_IGAIN_YAWINDEX 
+    usersettings.pid_igain[YAWINDEX] = USERSETTINGS_PID_IGAIN_YAWINDEX;
+#endif
+#ifdef USERSETTINGS_PID_DGAIN_YAWINDEX
+    usersettings.pid_dgain[YAWINDEX] = USERSETTINGS_PID_DGAIN_YAWINDEX;	
+#endif
 
-    for (int x = 3; x < NUMPIDITEMS; ++x) {
+		
+		for (int x = 3; x < NUMPIDITEMS; ++x) {
         usersettings.pid_pgain[x] = 0;
         usersettings.pid_igain[x] = 0;
         usersettings.pid_dgain[x] = 0;
     }
 
-    usersettings.pid_pgain[ALTITUDEINDEX] = 27L << 7;   // 2.7 on configurator
-    usersettings.pid_dgain[ALTITUDEINDEX] = 6L << 9;    // 6 on configurator
 
-    usersettings.pid_pgain[NAVIGATIONINDEX] = 25L << 11;        // 2.5 on configurator
-    usersettings.pid_dgain[NAVIGATIONINDEX] = 188L << 8;        // .188 on configurator
+#ifdef USERSETTINGS_PID_PGAIN_ALTITUDEINDEX		
+    usersettings.pid_pgain[ALTITUDEINDEX] = USERSETTINGS_PID_PGAIN_ALTITUDEINDEX;
+#elif
+		usersettings.pid_pgain[ALTITUDEINDEX] = 27L << 7;// 2.7 on configurator
+#endif
+		
+#ifdef USERSETTINGS_PID_DGAIN_ALTITUDEINDEX		
+    usersettings.pid_dgain[ALTITUDEINDEX] = USERSETTINGS_PID_DGAIN_ALTITUDEINDEX;    		
+#elif
+		usersettings.pid_dgain[ALTITUDEINDEX] = 6L << 9; // 6 on configurator
+#endif
+
+#ifdef USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX
+    usersettings.pid_pgain[NAVIGATIONINDEX] = USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX;   
+#elif
+		usersettings.pid_pgain[NAVIGATIONINDEX] = 25L << 11; // 2.5 on configurator
+#endif
+		
+#ifdef USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX	
+    usersettings.pid_dgain[NAVIGATIONINDEX] = USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX;   
+#elif 
+	usersettings.pid_dgain[NAVIGATIONINDEX] = 188L << 8; // .188 on configurator
+#endif
+
 
     // set default configuration checkbox settings.
     for (int x = 0; x < NUMPOSSIBLECHECKBOXES; ++x) {
         usersettings.checkboxconfiguration[x] = 0;
     }
-//   usersettings.checkboxconfiguration[CHECKBOXARM]=CHECKBOXMASKAUX1HIGH;
-    usersettings.checkboxconfiguration[CHECKBOXHIGHANGLE] = CHECKBOXMASKAUX1LOW;
-    usersettings.checkboxconfiguration[CHECKBOXSEMIACRO] = CHECKBOXMASKAUX1HIGH;
-    usersettings.checkboxconfiguration[CHECKBOXHIGHRATES] = CHECKBOXMASKAUX1HIGH;
-	
-		// reset the calibration settings
+
+#ifdef USERSETTINGS_CHECKBOXARM
+  usersettings.checkboxconfiguration[CHECKBOXARM] = USERSETTINGS_CHECKBOXARM;
+#endif
+#ifdef USERSETTINGS_CHECKBOXAUTOTHROTTLE
+  usersettings.checkboxconfiguration[CHECKBOXAUTOTHROTTLE] = USERSETTINGS_CHECKBOXAUTOTHROTTLE;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXALTHOLD
+  usersettings.checkboxconfiguration[CHECKBOXALTHOLD] = USERSETTINGS_CHECKBOXALTHOLD;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXCOMPASS
+  usersettings.checkboxconfiguration[CHECKBOXCOMPASS] = USERSETTINGS_CHECKBOXCOMPASS;		
+#endif		
+#ifdef USERSETTINGS_CHECKBOXPOSITIONHOLD
+  usersettings.checkboxconfiguration[CHECKBOXPOSITIONHOLD] = USERSETTINGS_CHECKBOXPOSITIONHOLD;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXRETURNTOHOME
+	  usersettings.checkboxconfiguration[CHECKBOXRETURNTOHOME] = USERSETTINGS_CHECKBOXRETURNTOHOME;	
+#endif
+#ifdef USERSETTINGS_CHECKBOXSEMIACRO
+  usersettings.checkboxconfiguration[CHECKBOXSEMIACRO] = USERSETTINGS_CHECKBOXSEMIACRO;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXFULLACRO
+  usersettings.checkboxconfiguration[CHECKBOXFULLACRO] = USERSETTINGS_CHECKBOXFULLACRO;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXHIGHRATES
+	  usersettings.checkboxconfiguration[CHECKBOXHIGHRATES] = USERSETTINGS_CHECKBOXHIGHRATES;	
+#endif
+#ifdef USERSETTINGS_CHECKBOXHIGHANGLE
+		usersettings.checkboxconfiguration[CHECKBOXHIGHANGLE] = USERSETTINGS_CHECKBOXHIGHANGLE;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXAUTOTUNE
+	  usersettings.checkboxconfiguration[CHECKBOXAUTOTUNE] = USERSETTINGS_CHECKBOXAUTOTUNE;	
+#endif
+#ifdef USERSETTINGS_CHECKBOXUNCRASHABLE
+	  usersettings.checkboxconfiguration[CHECKBOXUNCRASHABLE] = USERSETTINGS_CHECKBOXUNCRASHABLE;	
+#endif
+#ifdef USERSETTINGS_CHECKBOXHEADFREE
+  usersettings.checkboxconfiguration[CHECKBOXHEADFREE] = USERSETTINGS_CHECKBOXHEADFREE;		
+#endif
+#ifdef USERSETTINGS_CHECKBOXYAWHOLD
+	  usersettings.checkboxconfiguration[CHECKBOXYAWHOLD] = USERSETTINGS_CHECKBOXYAWHOLD;	
+#endif
+
+	// reset the calibration settings
     for (int x = 0; x < 3; ++x) {
         usersettings.compasszerooffset[x] = 0;
         usersettings.compasscalibrationmultiplier[x] = 1L << FIXEDPOINTSHIFT;
