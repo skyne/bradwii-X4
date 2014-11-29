@@ -153,8 +153,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ======================================================= JXD 385 ===============================================================
 
 #elif CONTROL_BOARD_TYPE == CONTROL_BOARD_JXD_JD385
-
-//#warning "JXD 385"
+#warning "JXD 385"
 
 #define GYRO_TYPE MPU6050       // gyro
 #define GYRO_ORIENTATION(VALUES,X, Y, Z) {VALUES[ROLLINDEX] =  -X; VALUES[PITCHINDEX] = -Y; VALUES[YAWINDEX] = -Z;}
