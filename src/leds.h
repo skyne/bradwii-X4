@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LED7_STATE 0x40
 #define LED8_STATE 0x80
 
-#define LED_ALL 0x00
-#define LED_NONE 0xFF
+#define LED_ALL 0xFF
+#define LED_NONE 0x00
 
 
 void leds_init(void);

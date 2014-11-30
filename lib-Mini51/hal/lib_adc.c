@@ -23,7 +23,7 @@ void lib_adc_init(void) {
    // 22MHz / 75 = 293kHz clock for ADC module
    // -> approx 137µs conversion time.
    CLK_SetModuleClock(ADC_MODULE
-		, CLK_CLKSEL1_ADC_S_IRC22M,
+		, CLK_CLKSEL1_ADC_S_IRC22M
 		, CLK_CLKDIV_ADC(50));
 #endif
 	

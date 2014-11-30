@@ -233,7 +233,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // On the free pads on the PCB a transistor ?PNP? + series resistor
 // and 2x LEDs plus 2x 10Ohms series resistor have to be added.
 #define LED1 LED1_STATE			//0x01
-// #define LED2 LED2_STATE 		//0x02
+// #define LED2 LED2_STATE 	//0x02
 // #define LED3 LED3_STATE 	//0x04
 // #define LED4 LED4_STATE	//0x08
 // #define LED5 LED5_STATE	//0x10
@@ -253,25 +253,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // set default PID settings
 // pitch PIDs
-#define USERSETTINGS_PID_PGAIN_PITCHINDEX 35L << 3   													// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_PITCHINDEX 4L 																	// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_PITCHINDEX 22L << 2    													// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX 35L << 3   								// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX 4L 												// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX 22L << 2    							// 8 on configurator
 
 // roll PIDs
-#define USERSETTINGS_PID_PGAIN_ROLLINDEX 35L << 3   													// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_ROLLINDEX 4L 																	// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_ROLLINDEX 22L << 2
+#define USERSETTINGS_PID_PGAIN_ROLLINDEX 35L << 3   								// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_ROLLINDEX 4L 												// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_ROLLINDEX 22L << 2										// 8 on configurator
 
 // yaw PIDs
-#define USERSETTINGS_PID_PGAIN_YAWINDEX 30L << 3   													// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_YAWINDEX 0L 																	// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_YAWINDEX 22L << 2
+#define USERSETTINGS_PID_PGAIN_YAWINDEX 30L << 3   									// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_YAWINDEX 0L 													// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_YAWINDEX 22L << 2										// 8 on configurator
 
 //
 #define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX 27L << 7   						// 2.7 on configurator
 #define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX 6L << 9    						// 6 on configurator
-#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX 25L << 11   				// 2.5 on configurator
-#define USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX 188L << 8   				// .188 on configurator
+#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX 25L << 11   					// 2.5 on configurator
+#define USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX 188L << 8   					// .188 on configurator
 
 // Checkbox settings...
 // #define USERSETTINGS_CHECKBOXARM CHECKBOXMASKAUX1HIGH
@@ -288,5 +288,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define USERSETTINGS_CHECKBOXUNCRASHABLE
 // #define USERSETTINGS_CHECKBOXHEADFREE
 // #define USERSETTINGS_CHECKBOXYAWHOLD
-
-

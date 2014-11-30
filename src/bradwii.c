@@ -173,7 +173,7 @@ int main(void)
 			defaultusersettings();
 		
 			// Indicate that default settings are used
-			leds_blink_fixed(LED1, 50, 50, 10);
+			leds_blink_fixed(LED1, 100, 100, 10);
     }
 
 	
@@ -600,11 +600,11 @@ int main(void)
 
             // Not armed
             // Short blinks
-						leds_blink_continuous(LED_ALL, 500, 450);
+						leds_blink_continuous(LED_NONE, 500, 450);
 						}
         else {
             // LEDs stay on
-            leds_set(LED_ALL);
+						leds_set(LED_ALL);
         }
 				
     } // Endless loop
@@ -627,8 +627,16 @@ void defaultusersettings(void)
     global.usersettingsfromeeprom = 0;  // this should get set to one if we read from eeprom
 
     // set default acro mode rotation rates
-    usersettings.maxyawrate = USERSETTINGS_MAXYAWRATE;  // degrees per second      
+#ifdef USERSETTINGS_MAXYAWRATE
+    usersettings.maxyawrate = USERSETTINGS_MAXYAWRATE;  // degrees per second    
+#else
+		usersettings.maxyawrate = 600L << FIXEDPOINTSHIFT;  // degrees per second   
+#endif
+#ifdef USERSETTINGS_MAXPITCHANDROLLRATE	
     usersettings.maxpitchandrollrate = USERSETTINGS_MAXPITCHANDROLLRATE; // degrees per second
+#else
+		usersettings.maxpitchandrollrate = 400L << FIXEDPOINTSHIFT; // degrees per second
+#endif
 
     // set default PID settings
 		for (int x = 0; x < 3; ++x) {
@@ -663,7 +671,7 @@ void defaultusersettings(void)
     // yaw PIDs
 #ifdef USERSETTINGS_PID_PGAIN_YAWINDEX
     usersettings.pid_pgain[YAWINDEX] = USERSETTINGS_PID_PGAIN_YAWINDEX;
-#elif
+#else
 		usersettings.pid_pgain[YAWINDEX] = 30L << 3;
 #endif
 #ifdef USERSETTINGS_PID_IGAIN_YAWINDEX 
@@ -683,25 +691,25 @@ void defaultusersettings(void)
 
 #ifdef USERSETTINGS_PID_PGAIN_ALTITUDEINDEX		
     usersettings.pid_pgain[ALTITUDEINDEX] = USERSETTINGS_PID_PGAIN_ALTITUDEINDEX;
-#elif
+#else
 		usersettings.pid_pgain[ALTITUDEINDEX] = 27L << 7;// 2.7 on configurator
 #endif
 		
 #ifdef USERSETTINGS_PID_DGAIN_ALTITUDEINDEX		
     usersettings.pid_dgain[ALTITUDEINDEX] = USERSETTINGS_PID_DGAIN_ALTITUDEINDEX;    		
-#elif
+#else
 		usersettings.pid_dgain[ALTITUDEINDEX] = 6L << 9; // 6 on configurator
 #endif
 
 #ifdef USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX
     usersettings.pid_pgain[NAVIGATIONINDEX] = USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX;   
-#elif
+#else
 		usersettings.pid_pgain[NAVIGATIONINDEX] = 25L << 11; // 2.5 on configurator
 #endif
 		
 #ifdef USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX	
     usersettings.pid_dgain[NAVIGATIONINDEX] = USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX;   
-#elif 
+#else
 	usersettings.pid_dgain[NAVIGATIONINDEX] = 188L << 8; // .188 on configurator
 #endif
 
