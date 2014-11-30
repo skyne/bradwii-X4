@@ -100,7 +100,7 @@ void leds_set(unsigned char state)
 
 // blink the LEDs a specified amount of cycles
 
-void leds_blink_fixed(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles)
+void leds_blink_cycles(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles)
 {
 	for(uint8_t i=0;i<cycles;i++) {
 			leds_set(~state);
@@ -113,7 +113,7 @@ void leds_blink_fixed(unsigned char state, unsigned int on_time, unsigned int of
 // switch the LEDs according to the timer, the function have to be called if the programm is running in a loop
 // 
 void leds_blink_continuous(unsigned char state, unsigned int on_time, unsigned int off_time) {
-	if(lib_timers_gettimermicroseconds(0) % (on_time * 1000) > (off_time * 1000) )
+	if(lib_timers_gettimermicroseconds(0) % ((on_time + off_time) * 1000) > (off_time * 1000) )
 			leds_set(~state);
 	else
 			leds_set(state);

@@ -173,7 +173,7 @@ int main(void)
 			defaultusersettings();
 		
 			// Indicate that default settings are used
-			leds_blink_fixed(LED1, 100, 100, 10);
+			leds_blink_cycles(LED1, 100, 100, 10);
     }
 
 	
@@ -583,7 +583,7 @@ int main(void)
         if(isbatterylow) {
             // Highest priority: Battery voltage
             // Blink all LEDs slow
-						leds_blink_continuous(LED_ALL, 1000, 500);
+						leds_blink_continuous(LED_ALL, 500, 500);
         }
 #endif 
 				
@@ -594,13 +594,13 @@ int main(void)
 #endif					
             // Lost contact with TX
             // Blink LEDs fast alternating
-						leds_blink_continuous(LED_ALL, 250, 120);
+						leds_blink_continuous(LED_ALL, 125, 125);
         }
         else if(!global.armed) {
 
             // Not armed
             // Short blinks
-						leds_blink_continuous(LED_NONE, 500, 450);
+						leds_blink_continuous(LED_ALL, 450, 50);
 						}
         else {
             // LEDs stay on

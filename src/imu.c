@@ -114,7 +114,7 @@ void calibrategyroandaccelerometer(bool both)
             break;
         }
 #else
-				leds_blink_continuous(LED_ALL, 100, 50);				
+				leds_blink_continuous(LED_ALL, 50, 50);				
 #endif
         for (int x = 0; x < 3; ++x) {
             lib_fp_lowpassfilter(&usersettings.gyrocalibration[x], -global.gyrorate[x], global.timesliver, FIXEDPOINTONEOVERONE, TIMESLIVEREXTRASHIFT);

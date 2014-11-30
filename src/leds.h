@@ -34,5 +34,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void leds_init(void);
 void leds_set(unsigned char state);
-void leds_blink_fixed(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles);
+void leds_blink_cycles(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles);
 void leds_blink_continuous(unsigned char state, unsigned int on_time, unsigned int off_time);
