@@ -103,9 +103,9 @@ void leds_set(unsigned char state)
 void leds_blink_cycles(unsigned char state, unsigned int on_time, unsigned int off_time, unsigned char cycles)
 {
 	for(uint8_t i=0;i<cycles;i++) {
-			leds_set(~state);
-			lib_timers_delaymilliseconds(on_time);
 			leds_set(state);
+			lib_timers_delaymilliseconds(on_time);
+			leds_set(~state);
 			lib_timers_delaymilliseconds(off_time);
 	}							
 }
@@ -114,8 +114,8 @@ void leds_blink_cycles(unsigned char state, unsigned int on_time, unsigned int o
 // 
 void leds_blink_continuous(unsigned char state, unsigned int on_time, unsigned int off_time) {
 	if(lib_timers_gettimermicroseconds(0) % ((on_time + off_time) * 1000) > (off_time * 1000) )
-			leds_set(~state);
-	else
 			leds_set(state);
+	else
+			leds_set(~state);
 			 
 }

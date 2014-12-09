@@ -154,7 +154,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // AUTOTUNE_D_MULTIPLIER is a multiplier that puts in a little extra D when autotuning is done. This helps damp
 // the wobbles after a quick angle change.
 // Always autotune on a full battery.
-#define AUTOTUNE_MAX_OSCILLATION 1.0
+#define AUTOTUNE_MAX_OSCILLATION 2.0
 #define AUTOTUNE_TARGET_ANGLE 20.0
 #define AUTOTUNE_D_MULTIPLIER 1.2
 
@@ -180,7 +180,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DC_MOTORS
 
 // Uncomment the following line iy you want to use the ADC to monitor the battery voltage
-// #define BATTERY_ADC_CHANNEL LIB_ADC_CHAN5
+//#define BATTERY_ADC_CHANNEL 5 //LIB_ADC_CHAN5
 #define BATTERY_ADC_CHANNEL NO_ADC
 // #define BATTERY_ADC_CHANNEL LIB_ADC_CHAN1
 
@@ -209,7 +209,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // This factor converts ADC voltage to battery voltage.
 // Inverse of voltage divider for battery voltage measurement.
 // On this board the voltage divider consists of two 10kOhm resistors.
-#define BATTERY_VOLTAGE_FACTOR 2.0
+#define BATTERY_VOLTAGE_FACTOR 10.0 //2.0
 
 // If battery voltage is below this value,
 // the pilot will be warned by blinking the LEDs.
@@ -219,7 +219,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // If your setup has less voltage drop or you want to be notified earlier,
 // set this value higher.
 // Unit: Volt
-#define BATTERY_UNDERVOLTAGE_LIMIT 3.2
+#define BATTERY_UNDERVOLTAGE_LIMIT 3.2 // 3.2
 
 // Parameters for leds
 // define the number of LEDs use on the copter otherwise define NO_LEDS

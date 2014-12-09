@@ -64,8 +64,9 @@ m
 // library headers
 #include "hal.h"
 #include "lib_timers.h"
-// #if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
+#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
 #include "lib_serial.h"
+#endif
 #include "lib_i2c.h"
 #include "lib_digitalio.h"
 #include "lib_fp.h"
@@ -108,7 +109,7 @@ fixedpointnum integratedangleerror[3];
 // limit pid windup
 #define INTEGRATEDANGLEERRORLIMIT FIXEDPOINTCONSTANT(1000)
 
-#ifdef ADC_USE
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
 	// Factor from ADC input voltage to battery voltage
 	#define FP_BATTERY_VOLTAGE_FACTOR FIXEDPOINTCONSTANT(BATTERY_VOLTAGE_FACTOR)
 
@@ -230,7 +231,8 @@ int main(void)
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
+  //  lib_adc_select_channel(BATTERY_ADC_CHANNEL);
+		lib_adc_select_channel(LIB_ADC_CHAN5);
     lib_adc_startconv();
 #endif
 
@@ -547,7 +549,7 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
+                lib_adc_select_channel(LIB_ADC_CHAN5);
             } else {
                 batteryvoltageraw = lib_adc_read_raw();
                 isadcchannelref = true;
@@ -567,7 +569,6 @@ int main(void)
                 // Because we call this only every other iteration.
                 // (...alternatively multiply global.timesliver by two).      
 								lib_fp_lowpassfilter(&(global.batteryvoltage), batteryvoltage, global.timesliver, FIXEDPOINTONEOVERONEFOURTH, TIMESLIVEREXTRASHIFT);
-                
 	
 							  // Update state of isbatterylow flag.
                 if(global.batteryvoltage < FP_BATTERY_UNDERVOLTAGE_LIMIT)
@@ -583,14 +584,14 @@ int main(void)
         if(isbatterylow) {
             // Highest priority: Battery voltage
             // Blink all LEDs slow
-						leds_blink_continuous(LED_ALL, 500, 500);
+						leds_blink_continuous(LED_ALL, 700, 300);
         }
 #endif 
 				
-#if (BATTERY_ADC_CHANNEL == NO_ADC)				
-        if(isfailsafeactive) {
-#else
+#if (BATTERY_ADC_CHANNEL != NO_ADC)				
 				else if(isfailsafeactive) {
+#else
+				if(isfailsafeactive) {
 #endif					
             // Lost contact with TX
             // Blink LEDs fast alternating
@@ -600,7 +601,7 @@ int main(void)
 
             // Not armed
             // Short blinks
-						leds_blink_continuous(LED_ALL, 450, 50);
+						leds_blink_continuous(LED_ALL, 50, 450);
 						}
         else {
             // LEDs stay on
