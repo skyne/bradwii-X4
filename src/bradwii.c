@@ -243,6 +243,23 @@ int main(void)
     global.navigationmode = NAVIGATIONMODEOFF;
     global.failsafetimer = lib_timers_starttimer();
 		
+		/*
+		//testcode to see if uart works
+		unsigned int led_state = 0;
+		for (;;) {
+			//lib_serial_sendchar(0, 'H');
+			char x = lib_serial_numcharsavailable(0);
+			//lib_serial_sendchar(0, '0'+x);
+			if (x != 0){
+				unsigned char c = lib_serial_getchar(0);
+				lib_serial_sendchar(0, c);
+				lib_serial_sendchar(0, '\r');
+				lib_serial_sendchar(0, '\n');
+			}
+			leds_set(led_state);
+			led_state = 0xFF-led_state;
+			lib_timers_delaymilliseconds(1);
+		}*/
     for (;;) {
 
         // check to see what switches are activated

@@ -73,12 +73,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // note: two examples are given below, but any combination of ports can be added together.
 
 //#define MULTIWII_CONFIG_SERIAL_PORTS NOSERIALPORT
-//#define MULTIWII_CONFIG_SERIAL_PORTS SERIALPORT0
-#define MULTIWII_CONFIG_SERIAL_PORTS SERIALPORT1
+//see libserial, this will open serial port 1 !
+#define MULTIWII_CONFIG_SERIAL_PORTS SERIALPORT0
+//#define MULTIWII_CONFIG_SERIAL_PORTS SERIALPORT1
 //#define MULTIWII_CONFIG_SERIAL_PORTS SERIALPORT1+SERIALPORT3
 
-//#define SERIAL_0_BAUD 115200
-#define SERIAL_1_BAUD 115200
+//strange on my copter 115200 does not work becaus rx pin has a pullup or pulldown resistor soldered in -> lower baudrates work
+#define SERIAL_0_BAUD 19200
+
+//#define SERIAL_1_BAUD 115200
 //#define SERIAL_2_BAUD 9600
 //#define SERIAL_3_BAUD 115200
 
