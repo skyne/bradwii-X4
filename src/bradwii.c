@@ -227,12 +227,11 @@ int main(void)
             ;
         initialbandgapvoltage += lib_adc_read_volt();
     }
-    initialbandgapvoltage >>= 3;
+    initialbandgapvoltage >>= 3; //divide by 8
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-  //  lib_adc_select_channel(BATTERY_ADC_CHANNEL);
-		lib_adc_select_channel(LIB_ADC_CHAN5);
+    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
     lib_adc_startconv();
 #endif
 
@@ -566,7 +565,7 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(LIB_ADC_CHAN5);
+                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
             } else {
                 batteryvoltageraw = lib_adc_read_raw();
                 isadcchannelref = true;

@@ -183,9 +183,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DC_MOTORS
 
 // Uncomment the following line iy you want to use the ADC to monitor the battery voltage
-//#define BATTERY_ADC_CHANNEL 5 //LIB_ADC_CHAN5
-#define BATTERY_ADC_CHANNEL NO_ADC
-// #define BATTERY_ADC_CHANNEL LIB_ADC_CHAN1
+//#define BATTERY_ADC_CHANNEL NO_ADC
+//seems like the battery is connected to the adc AIN1 only with a series resistor and no voltage divider?!
+#define BATTERY_ADC_CHANNEL LIB_ADC_CHAN1
 
 // ADC external reference voltage.
 // In the MINI54 the ADC reference voltage is internally tied to
