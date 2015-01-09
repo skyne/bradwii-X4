@@ -213,8 +213,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // This factor converts ADC voltage to battery voltage.
 // Inverse of voltage divider for battery voltage measurement.
 // On this board the voltage divider consists of two ???kOhm resistors.
-// I found 3.0 to work ok on my copter by try and error
-#define BATTERY_VOLTAGE_FACTOR 3.0 
+//FIXME!
+#define BATTERY_VOLTAGE_FACTOR 10.0 
 
 // If battery voltage is below this value,
 // the pilot will be warned by blinking the LEDs.
