@@ -61,6 +61,7 @@ m
 
 */
 
+#include "config.h"
 // library headers
 #include "hal.h"
 #include "lib_timers.h"
@@ -129,6 +130,24 @@ unsigned long timeslivertimer = 0;
 // Local functions
 static void detectstickcommand(void);
 
+//this is rather stupid to convert those but
+//we need to use our own define of the adc port
+//so we map this:
+unsigned char convert_adc_channel(unsigned char in){
+	switch(in){
+		case(ADC_0): return LIB_ADC_CHAN0;
+		case(ADC_1): return LIB_ADC_CHAN1;
+		case(ADC_2): return LIB_ADC_CHAN2;
+		case(ADC_3): return LIB_ADC_CHAN3;
+		case(ADC_4): return LIB_ADC_CHAN4;
+		case(ADC_5): return LIB_ADC_CHAN5;
+		case(ADC_6): return LIB_ADC_CHAN6;
+		case(ADC_7): return LIB_ADC_CHAN7;
+		default:
+		case(0): //no adc given?! select ref:
+			return LIB_ADC_CHANREF;
+	}
+}	
 
 // It all starts here:
 int main(void)
@@ -192,7 +211,7 @@ int main(void)
    
 		initoutputs();
 
-		#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
+#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
     serialinit();
 #endif
 
@@ -231,10 +250,17 @@ int main(void)
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
+    lib_adc_select_channel(convert_adc_channel(BATTERY_ADC_CHANNEL));
     lib_adc_startconv();
+	#if (BATTERY_ADC_DEBUG)
+		lib_serial_sendstring(0, "POWER ON ADC MEASURMENTS:================\r\n");
+		lib_serial_sendstring(0, "BANDGAP=");
+		serialprintfixedpoint(0, initialbandgapvoltage);
+		lib_serial_sendstring(0, "\r\nVOLTAGERAW=");
+		serialprintfixedpoint(0, bandgapvoltageraw);
+		lib_serial_sendstring(0, "=========================================\r\n");
+	#endif
 #endif
-
     // set the default i2c speed to 400 kHz.  If a device needs to slow it down, it can, but it should set it back.
     lib_i2c_setclockspeed(I2C_400_KHZ);
 
@@ -250,7 +276,8 @@ int main(void)
 			char x = lib_serial_numcharsavailable(0);
 			//lib_serial_sendchar(0, '0'+x);
 			if (x != 0){
-				unsigned char c = lib_serial_getchar(0);
+				lib_serial_sendstring(0, "POWER ON ADC MEASURMENTS:================\r\n");
+			  unsigned char c = lib_serial_getchar(0);
 				lib_serial_sendchar(0, c);
 				lib_serial_sendchar(0, '\r');
 				lib_serial_sendchar(0, '\n');
@@ -258,7 +285,8 @@ int main(void)
 			leds_set(led_state);
 			led_state = 0xFF-led_state;
 			lib_timers_delaymilliseconds(1);
-		}*/
+		}
+		*/
     for (;;) {
 
         // check to see what switches are activated
@@ -565,7 +593,7 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
+                lib_adc_select_channel(convert_adc_channel(BATTERY_ADC_CHANNEL));
             } else {
                 batteryvoltageraw = lib_adc_read_raw();
                 isadcchannelref = true;
@@ -579,6 +607,15 @@ int main(void)
                 // Now take the voltage divider into account to get battery voltage.
                 batteryvoltage = lib_fp_multiply(batteryvoltage, FP_BATTERY_VOLTAGE_FACTOR);
 
+#if (BATTERY_ADC_DEBUG)
+							  lib_serial_sendstring(0, "\r\nBANDGAP=");
+							  serialprintfixedpoint(0, bandgapvoltageraw);
+								lib_serial_sendstring(0, "\r\nBATTERY RAW=");
+							  serialprintfixedpoint(0, batteryvoltageraw);
+							  lib_serial_sendstring(0, "\r\nBATTERY=");
+							  serialprintfixedpoint(0, batteryvoltage);
+							  lib_serial_sendstring(0, "\r\n");
+#endif							
                 // Since we measure under load, the voltage is not stable.
                 // Apply 0.5 second lowpass filter.
                 // Use constant FIXEDPOINTONEOVERONEFOURTH instead of FIXEDPOINTONEOVERONEHALF

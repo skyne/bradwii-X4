@@ -369,8 +369,6 @@ void serialcheckportforaction(char portnumber)
     }
 }
 
-//#define SERIALTEXTDEBUG
-#ifdef SERIALTEXTDEBUG
 void serialprintnumber(char portnumber, long num, int digits, int decimals, char usebuffer)
    // prints a int number, right justified, using digits # of digits, puting a
    // decimal decimals places from the end, and using blank
@@ -407,6 +405,9 @@ void serialprintfixedpoint(char portnumber, fixedpointnum fp)
     serialprintnumber(portnumber, lib_fp_multiply(fp, 1000), 7, 3, 1);
     lib_serial_sendstring(portnumber, "\n\r");
 }
+
+//#define SERIALTEXTDEBUG
+#ifdef SERIALTEXTDEBUG
 
 void serialcheckportforactiontest(char portnumber)
 {
