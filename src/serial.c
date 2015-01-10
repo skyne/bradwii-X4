@@ -406,6 +406,11 @@ void serialprintfixedpoint(char portnumber, fixedpointnum fp)
     lib_serial_sendstring(portnumber, "\n\r");
 }
 
+void serialprintfixedpoint_no_linebreak(char portnumber, fixedpointnum fp)
+{
+    serialprintnumber(portnumber, lib_fp_multiply(fp, 1000), 7, 3, 1);
+}
+
 //#define SERIALTEXTDEBUG
 #ifdef SERIALTEXTDEBUG
 

@@ -184,9 +184,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Uncomment the following line iy you want to use the ADC to monitor the battery voltage
 //#define BATTERY_ADC_CHANNEL NO_ADC
-//seems like the battery is connected to the adc AIN1 only with a series resistor and no voltage divider?!
-//WHAT IS THE CORRECT ADC CHAN? tested and not ok: ADC_0(changing a lot), ADC_1 (=0),
-#define BATTERY_ADC_CHANNEL ADC_2 //collides with rx, test it anyway
+#define BATTERY_ADC_CHANNEL (1<<2) 
 #define BATTERY_ADC_DEBUG 0
 // ADC external reference voltage.
 // In the MINI54 the ADC reference voltage is internally tied to
@@ -213,8 +211,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // This factor converts ADC voltage to battery voltage.
 // Inverse of voltage divider for battery voltage measurement.
 // On this board the voltage divider consists of two ???kOhm resistors.
-//FIXME!
-#define BATTERY_VOLTAGE_FACTOR 10.0 
+// NOTE: i did not want to desolder it to measure (a parallel capacitor makes measuring impossible)
+//       so i just compared battery voltage to the voltage on this divider (4.1V -> 1.59V on divider)
+#define BATTERY_VOLTAGE_FACTOR 2.5786
 
 // If battery voltage is below this value,
 // the pilot will be warned by blinking the LEDs.
@@ -258,19 +257,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // set default PID settings
 // pitch PIDs
-#define USERSETTINGS_PID_PGAIN_PITCHINDEX 35L << 3   								// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_PITCHINDEX 4L 												// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_PITCHINDEX 22L << 2    							// 8 on configurator
-
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX FIXEDPOINTCONSTANT(1.5) //35L << 3   								// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX FIXEDPOINTCONSTANT(0.015) //4L 												// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2    							// 8 on configurator
+ 
 // roll PIDs
-#define USERSETTINGS_PID_PGAIN_ROLLINDEX 35L << 3   								// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_ROLLINDEX 4L 												// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_ROLLINDEX 22L << 2										// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_ROLLINDEX FIXEDPOINTCONSTANT(1.5) //35L << 3   								// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_ROLLINDEX FIXEDPOINTCONSTANT(0.015) //4L 												// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_ROLLINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2										// 8 on configurator
 
 // yaw PIDs
-#define USERSETTINGS_PID_PGAIN_YAWINDEX 30L << 3   									// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_YAWINDEX 0L 													// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_YAWINDEX 22L << 2										// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_YAWINDEX FIXEDPOINTCONSTANT(1.5) //30L << 3   									// 1.5 on configurator
+#define USERSETTINGS_PID_IGAIN_YAWINDEX FIXEDPOINTCONSTANT(0.015) //0L 													// .008 on configurator
+#define USERSETTINGS_PID_DGAIN_YAWINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2										// 8 on configurator
 
 //
 #define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX 27L << 7   						// 2.7 on configurator

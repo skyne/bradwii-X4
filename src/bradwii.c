@@ -61,7 +61,6 @@ m
 
 */
 
-#include "config.h"
 // library headers
 #include "hal.h"
 #include "lib_timers.h"
@@ -71,7 +70,9 @@ m
 #include "lib_i2c.h"
 #include "lib_digitalio.h"
 #include "lib_fp.h"
+#if (BATTERY_ADC_CHANNEL != NO_ADC)
 #include "lib_adc.h"
+#endif
 
 // project file headers
 #include "bradwii.h"
@@ -128,24 +129,6 @@ unsigned long timeslivertimer = 0;
 // Local functions
 static void detectstickcommand(void);
 
-//this is rather stupid to convert those but
-//we need to use our own define of the adc port
-//so we map this:
-lib_adc_channel_t convert_adc_channel(unsigned char in){
-	switch(in){
-		case(ADC_0): return LIB_ADC_CHAN0;
-		case(ADC_1): return LIB_ADC_CHAN1;
-		case(ADC_2): return LIB_ADC_CHAN2;
-		case(ADC_3): return LIB_ADC_CHAN3;
-		case(ADC_4): return LIB_ADC_CHAN4;
-		case(ADC_5): return LIB_ADC_CHAN5;
-		case(ADC_6): return LIB_ADC_CHAN6;
-		case(ADC_7): return LIB_ADC_CHAN7;
-		default:
-		case(0): //no adc given?! select ref:
-			return LIB_ADC_CHANREF;
-	}
-}	
 
 // It all starts here:
 int main(void)
@@ -248,7 +231,7 @@ int main(void)
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-    lib_adc_select_channel(convert_adc_channel(BATTERY_ADC_CHANNEL));
+    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
     lib_adc_startconv();
 	#if (BATTERY_ADC_DEBUG)
 		while(lib_adc_is_busy()){
@@ -257,11 +240,11 @@ int main(void)
 		
 		lib_serial_sendstring(0, "POWER ON ADC MEASURMENTS:================\r\n");
 		lib_serial_sendstring(0, "BANDGAP=");
-		serialprintfixedpoint(0, initialbandgapvoltage);
+		serialprintfixedpoint_no_linebreak(0, initialbandgapvoltage);
 		lib_serial_sendstring(0, "\r\nBGAPVOLTAGERAW=");
-		serialprintfixedpoint(0, bandgapvoltageraw);
+		serialprintfixedpoint_no_linebreak(0, bandgapvoltageraw);
 		lib_serial_sendstring(0, "\r\nBATTERY RAW=");
-		serialprintfixedpoint(0, batteryvoltageraw);
+		serialprintfixedpoint_no_linebreak(0, batteryvoltageraw);
 		lib_serial_sendstring(0, "=========================================\r\n");
 		lib_timers_delaymilliseconds(2000);
 	#endif
@@ -598,7 +581,7 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(convert_adc_channel(BATTERY_ADC_CHANNEL));
+                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
             } else {
 								//raw voltage is 0.0-1.0 (min to max adc )
                 batteryvoltageraw = lib_adc_read_raw();
@@ -613,20 +596,23 @@ int main(void)
                 // Now take the voltage divider into account to get battery voltage.
                 batteryvoltage = lib_fp_multiply(batteryvoltage, FP_BATTERY_VOLTAGE_FACTOR);
 
-#if (BATTERY_ADC_DEBUG)
-							  lib_serial_sendstring(0, "\r\nBANDGAP=");
-							  serialprintfixedpoint(0, bandgapvoltageraw);
-								lib_serial_sendstring(0, "  BATTERY RAW=");
-							  serialprintfixedpoint(0, batteryvoltageraw);
-							  lib_serial_sendstring(0, "  BATTERY=");
-							  serialprintfixedpoint(0, batteryvoltage);
-#endif							
                 // Since we measure under load, the voltage is not stable.
                 // Apply 0.5 second lowpass filter.
                 // Use constant FIXEDPOINTONEOVERONEFOURTH instead of FIXEDPOINTONEOVERONEHALF
                 // Because we call this only every other iteration.
                 // (...alternatively multiply global.timesliver by two).      
 								lib_fp_lowpassfilter(&(global.batteryvoltage), batteryvoltage, global.timesliver, FIXEDPOINTONEOVERONEFOURTH, TIMESLIVEREXTRASHIFT);
+
+							#if (BATTERY_ADC_DEBUG)
+							  lib_serial_sendstring(0, "\r\nBANDGAP=");
+							  serialprintfixedpoint_no_linebreak(0, bandgapvoltageraw);
+								lib_serial_sendstring(0, "  BATTERY RAW=");
+							  serialprintfixedpoint_no_linebreak(0, batteryvoltageraw);
+							  lib_serial_sendstring(0, "  BATTERY=");
+							  serialprintfixedpoint_no_linebreak(0, batteryvoltage);
+								lib_serial_sendstring(0, "  FILTERED BAT=");
+							  serialprintfixedpoint_no_linebreak(0, global.batteryvoltage);
+#endif							
 								
 							  // Update state of isbatterylow flag.
                 if(global.batteryvoltage < FP_BATTERY_UNDERVOLTAGE_LIMIT)
