@@ -255,6 +255,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USERSETTINGS_MAXYAWRATE  600L << FIXEDPOINTSHIFT  					// degrees per second
 #define USERSETTINGS_MAXPITCHANDROLLRATE  400L << FIXEDPOINTSHIFT 	// degrees per second
 
+#include "lib_fp.h"
+
 // set default PID settings
 // pitch PIDs
 #define USERSETTINGS_PID_PGAIN_PITCHINDEX FIXEDPOINTCONSTANT(1.5) //35L << 3   								// 1.5 on configurator
