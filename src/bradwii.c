@@ -213,7 +213,7 @@ int main(void)
     
 		initimu();
 		
-		
+#if 0
 lib_serial_sendstring(0, "PID P=");
 serialprintfixedpoint_no_linebreak(0, usersettings.pid_pgain[PITCHINDEX]); 
 lib_serial_sendstring(0, " I=");
@@ -221,6 +221,7 @@ serialprintfixedpoint_no_linebreak(0, usersettings.pid_igain[PITCHINDEX]);
 lib_serial_sendstring(0, " D=");
 serialprintfixedpoint_no_linebreak(0, usersettings.pid_dgain[PITCHINDEX]);
 lib_serial_sendstring(0, "\r\n");
+#endif
 
 #if (BATTERY_ADC_CHANNEL != NO_ADC)
 		// Measure internal bandgap voltage now.
@@ -701,36 +702,36 @@ void defaultusersettings(void)
 
 		// pitch PIDs
 #ifdef USERSETTINGS_PID_PGAIN_PITCHINDEX
-    usersettings.pid_pgain[PITCHINDEX] =  USERSETTINGS_PID_PGAIN_PITCHINDEX;
+    usersettings.pid_pgain[PITCHINDEX] = USERSETTINGS_PID_PGAIN_PITCHINDEX;
 #endif
 #ifdef USERSETTINGS_PID_IGAIN_PITCHINDEX
-    usersettings.pid_igain[PITCHINDEX] =  USERSETTINGS_PID_IGAIN_PITCHINDEX;
+    usersettings.pid_igain[PITCHINDEX] = USERSETTINGS_PID_IGAIN_PITCHINDEX;
 #endif
 #ifdef USERSETTINGS_PID_DGAIN_PITCHINDEX
-    usersettings.pid_dgain[PITCHINDEX] =  USERSETTINGS_PID_DGAIN_PITCHINDEX;
+    usersettings.pid_dgain[PITCHINDEX] = USERSETTINGS_PID_DGAIN_PITCHINDEX;
 #endif
 		
  // roll PIDs
 #ifdef USERSETTINGS_PID_PGAIN_ROLLINDEX		
-    usersettings.pid_pgain[ROLLINDEX] =  USERSETTINGS_PID_PGAIN_ROLLINDEX;
+    usersettings.pid_pgain[ROLLINDEX] = USERSETTINGS_PID_PGAIN_ROLLINDEX;
 #endif
 #ifdef USERSETTINGS_PID_IGAIN_ROLLINDEX
-    usersettings.pid_igain[ROLLINDEX] =  USERSETTINGS_PID_IGAIN_ROLLINDEX;
+    usersettings.pid_igain[ROLLINDEX] = USERSETTINGS_PID_IGAIN_ROLLINDEX;
 #endif
 #ifdef USERSETTINGS_PID_DGAIN_ROLLINDEX
-    usersettings.pid_dgain[ROLLINDEX] =  USERSETTINGS_PID_DGAIN_ROLLINDEX;	
+    usersettings.pid_dgain[ROLLINDEX] = USERSETTINGS_PID_DGAIN_ROLLINDEX;	
 #endif
 	
 	
     // yaw PIDs
 #ifdef USERSETTINGS_PID_PGAIN_YAWINDEX
-    usersettings.pid_pgain[YAWINDEX] =  USERSETTINGS_PID_PGAIN_YAWINDEX;
+    usersettings.pid_pgain[YAWINDEX] = USERSETTINGS_PID_PGAIN_YAWINDEX;
 #endif
 #ifdef USERSETTINGS_PID_IGAIN_YAWINDEX 
-    usersettings.pid_igain[YAWINDEX] =  USERSETTINGS_PID_IGAIN_YAWINDEX;
+    usersettings.pid_igain[YAWINDEX] = USERSETTINGS_PID_IGAIN_YAWINDEX;
 #endif
 #ifdef USERSETTINGS_PID_DGAIN_YAWINDEX
-    usersettings.pid_dgain[YAWINDEX] =  USERSETTINGS_PID_DGAIN_YAWINDEX;	
+    usersettings.pid_dgain[YAWINDEX] = USERSETTINGS_PID_DGAIN_YAWINDEX;	
 #endif
 
 		for (int x = 3; x < NUMPIDITEMS; ++x) {
@@ -747,7 +748,7 @@ void defaultusersettings(void)
 #endif
 		
 #ifdef USERSETTINGS_PID_DGAIN_ALTITUDEINDEX		
-    usersettings.pid_dgain[ALTITUDEINDEX] =  USERSETTINGS_PID_DGAIN_ALTITUDEINDEX;    		
+    usersettings.pid_dgain[ALTITUDEINDEX] = USERSETTINGS_PID_DGAIN_ALTITUDEINDEX;    		
 #else
 		usersettings.pid_dgain[ALTITUDEINDEX] = 6L << 9; // 6 on configurator
 #endif
