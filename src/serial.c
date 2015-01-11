@@ -203,13 +203,15 @@ void evaluatecommand(char portnumber, unsigned char *data)
     } else if (command == MSP_PID) {    // send pid data
         sendgoodheader(portnumber, 3 * NUMPIDITEMS);
         for (int x = 0; x < NUMPIDITEMS; ++x) {
-            if (x == ALTITUDEINDEX)
+						if (x == ALTITUDEINDEX)
                 sendandchecksumcharacter(portnumber, usersettings.pid_pgain[x] >> 7);
             else if (x == NAVIGATIONINDEX)
                 sendandchecksumcharacter(portnumber, usersettings.pid_pgain[x] >> 11);
             else
                 sendandchecksumcharacter(portnumber, usersettings.pid_pgain[x] >> 3);
-            sendandchecksumcharacter(portnumber, usersettings.pid_igain[x]);
+            
+						sendandchecksumcharacter(portnumber, usersettings.pid_igain[x]);
+						
             if (x == NAVIGATIONINDEX)
                 sendandchecksumcharacter(portnumber, usersettings.pid_dgain[x] >> 8);
             else if (x == ALTITUDEINDEX)
@@ -219,25 +221,23 @@ void evaluatecommand(char portnumber, unsigned char *data)
         }
     } else if (command == MSP_SET_PID) {
         for (int x = 0; x < NUMPIDITEMS; ++x) {
-            if (x == ALTITUDEINDEX)
+						if (x == ALTITUDEINDEX)
                 usersettings.pid_pgain[x] = ((fixedpointnum) (*data++)) << 7;
             else if (x == NAVIGATIONINDEX)
                 usersettings.pid_pgain[x] = ((fixedpointnum) (*data++)) << 11;
             else
                 usersettings.pid_pgain[x] = ((fixedpointnum) (*data++)) << 3;
-            usersettings.pid_igain[x] = ((fixedpointnum) (*data++));
-            if (x == NAVIGATIONINDEX)
+            
+						usersettings.pid_igain[x] = ((fixedpointnum) (*data++));
+            
+						if (x == NAVIGATIONINDEX)
                 usersettings.pid_dgain[x] = ((fixedpointnum) (*data++)) << 8;
             else if (x == ALTITUDEINDEX)
                 usersettings.pid_dgain[x] = ((fixedpointnum) (*data++)) << 9;
             else
                 usersettings.pid_dgain[x] = ((fixedpointnum) (*data++)) << 2;
-
         }
-// while testing, make roll pid equal to pitch pid so I only have to change one thing.
-//usersettings.pid_pgain[ROLLINDEX]=usersettings.pid_pgain[PITCHINDEX];
-//usersettings.pid_igain[ROLLINDEX]=usersettings.pid_igain[PITCHINDEX];
-//usersettings.pid_dgain[ROLLINDEX]=usersettings.pid_dgain[PITCHINDEX];
+
         sendgoodheader(portnumber, 0);
     } else if (command == MSP_DEBUG) {  // send debug data
         sendgoodheader(portnumber, 8);

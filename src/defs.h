@@ -315,3 +315,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef GAIN_SCHEDULING_FACTOR
 #define GAIN_SCHEDULING_FACTOR 1.0
 #endif
+
+//conversion from fp to internal representation:
+// NOTE: the values shown in config gui and the real floatingpoint
+//       numbers do NOT MATCH ?! use this conversion here:
+#define PID_TO_CONFIGURATORVALUE_P(a) ((fixedpointnum)((((a)*(10<<3)))))
+#define PID_TO_CONFIGURATORVALUE_I(a) ((fixedpointnum)((a)*1000))
+#define PID_TO_CONFIGURATORVALUE_D(a) ((fixedpointnum)((a)*(1<<2)))
+//
+#define PID_TO_CONFIGURATORVALUE_ALT_P(a) ((fixedpointnum)(((a)*(10<<7))))
+#define PID_TO_CONFIGURATORVALUE_ALT_I(a) ((fixedpointnum)((a)*1000))
+#define PID_TO_CONFIGURATORVALUE_ALT_D(a) ((fixedpointnum)((a)*(1<<9)))
+//
+#define PID_TO_CONFIGURATORVALUE_NAV_P(a) ((fixedpointnum)((a)*(10<<7)))
+#define PID_TO_CONFIGURATORVALUE_NAV_I(a) ((fixedpointnum)((a)* 1000))
+#define PID_TO_CONFIGURATORVALUE_NAV_D(a) ((fixedpointnum)((a)* (1<<9)))
+
+

@@ -213,6 +213,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // On this board the voltage divider consists of two ???kOhm resistors.
 // NOTE: i did not want to desolder it to measure (a parallel capacitor makes measuring impossible)
 //       so i just compared battery voltage to the voltage on this divider (4.1V -> 1.59V on divider)
+//       -> 4.1V is read perfectly, 3.635V iss read as 3.62V so its good enough but could be fine tuned
+//          (in order to do so someone will have to measure the resistors while disconnected to the circuit)
 #define BATTERY_VOLTAGE_FACTOR 2.5786
 
 // If battery voltage is below this value,
@@ -255,29 +257,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USERSETTINGS_MAXYAWRATE  600L << FIXEDPOINTSHIFT  					// degrees per second
 #define USERSETTINGS_MAXPITCHANDROLLRATE  400L << FIXEDPOINTSHIFT 	// degrees per second
 
-#include "lib_fp.h"
-
 // set default PID settings
+
 // pitch PIDs
-#define USERSETTINGS_PID_PGAIN_PITCHINDEX FIXEDPOINTCONSTANT(1.5) //35L << 3   								// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_PITCHINDEX FIXEDPOINTCONSTANT(0.015) //4L 												// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_PITCHINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2    							// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_P(1.5)
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_I(0.015)
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_D(20.0)
  
 // roll PIDs
-#define USERSETTINGS_PID_PGAIN_ROLLINDEX FIXEDPOINTCONSTANT(1.5) //35L << 3   								// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_ROLLINDEX FIXEDPOINTCONSTANT(0.015) //4L 												// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_ROLLINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2										// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_ROLLINDEX PID_TO_CONFIGURATORVALUE_P(1.5)
+#define USERSETTINGS_PID_IGAIN_ROLLINDEX PID_TO_CONFIGURATORVALUE_I(0.015)
+#define USERSETTINGS_PID_DGAIN_ROLLINDEX PID_TO_CONFIGURATORVALUE_D(20.0)
 
 // yaw PIDs
-#define USERSETTINGS_PID_PGAIN_YAWINDEX FIXEDPOINTCONSTANT(1.5) //30L << 3   									// 1.5 on configurator
-#define USERSETTINGS_PID_IGAIN_YAWINDEX FIXEDPOINTCONSTANT(0.015) //0L 													// .008 on configurator
-#define USERSETTINGS_PID_DGAIN_YAWINDEX FIXEDPOINTCONSTANT(20.0) //22L << 2										// 8 on configurator
+#define USERSETTINGS_PID_PGAIN_YAWINDEX PID_TO_CONFIGURATORVALUE_P(1.5)
+#define USERSETTINGS_PID_IGAIN_YAWINDEX PID_TO_CONFIGURATORVALUE_I(0.015)
+#define USERSETTINGS_PID_DGAIN_YAWINDEX PID_TO_CONFIGURATORVALUE_D(20.0)
 
 //
-#define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX 27L << 7   						// 2.7 on configurator
-#define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX 6L << 9    						// 6 on configurator
-#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX 25L << 11   					// 2.5 on configurator
-#define USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX 188L << 8   					// .188 on configurator
+#define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_P(2.7)
+#define USERSETTINGS_PID_IGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_I(0.0)
+#define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_D(6.0)
+#define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_P(2.5)
+#define USERSETTINGS_PID_IGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_I(0.0)
+#define USERSETTINGS_PID_DGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_D(0.188)
 
 // Checkbox settings...
 // #define USERSETTINGS_CHECKBOXARM CHECKBOXMASKAUX1HIGH
