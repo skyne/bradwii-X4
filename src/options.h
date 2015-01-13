@@ -69,6 +69,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MPU6050 2
 #define MC3210 3
 
+//DEFINE ADCs:
+#define NO_ADC 0
+
 // GPS_TYPE's
 #define NO_GPS 0
 #define SERIAL_GPS 1

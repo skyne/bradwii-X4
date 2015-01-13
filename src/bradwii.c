@@ -192,7 +192,7 @@ int main(void)
    
 		initoutputs();
 
-		#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
+#if (MULTIWII_CONFIG_SERIAL_PORTS != NOSERIALPORT)
     serialinit();
 #endif
 
@@ -212,6 +212,16 @@ int main(void)
 #endif
     
 		initimu();
+		
+#if 0
+lib_serial_sendstring(0, "PID P=");
+serialprintfixedpoint_no_linebreak(0, usersettings.pid_pgain[PITCHINDEX]); 
+lib_serial_sendstring(0, " I=");
+serialprintfixedpoint_no_linebreak(0, usersettings.pid_igain[PITCHINDEX]);
+lib_serial_sendstring(0, " D=");
+serialprintfixedpoint_no_linebreak(0, usersettings.pid_dgain[PITCHINDEX]);
+lib_serial_sendstring(0, "\r\n");
+#endif
 
 #if (BATTERY_ADC_CHANNEL != NO_ADC)
 		// Measure internal bandgap voltage now.
@@ -223,19 +233,32 @@ int main(void)
     // Take average of 8 measurements
     for(int i=0;i<8;i++) {
         lib_adc_startconv();
-        while(lib_adc_is_busy())
-            ;
+        while(lib_adc_is_busy()){
+				}
         initialbandgapvoltage += lib_adc_read_volt();
     }
-    initialbandgapvoltage >>= 3;
+    initialbandgapvoltage >>= 3; //divide by 8
     bandgapvoltageraw = lib_adc_read_raw();
     // Start first battery voltage measurement
     isadcchannelref = false;
-  //  lib_adc_select_channel(BATTERY_ADC_CHANNEL);
-		lib_adc_select_channel(LIB_ADC_CHAN5);
+    lib_adc_select_channel(BATTERY_ADC_CHANNEL);
     lib_adc_startconv();
+	#if (BATTERY_ADC_DEBUG)
+		while(lib_adc_is_busy()){
+		}
+		batteryvoltageraw = lib_adc_read_raw();
+		
+		lib_serial_sendstring(0, "POWER ON ADC MEASURMENTS:================\r\n");
+		lib_serial_sendstring(0, "BANDGAP=");
+		serialprintfixedpoint_no_linebreak(0, initialbandgapvoltage);
+		lib_serial_sendstring(0, "\r\nBGAPVOLTAGERAW=");
+		serialprintfixedpoint_no_linebreak(0, bandgapvoltageraw);
+		lib_serial_sendstring(0, "\r\nBATTERY RAW=");
+		serialprintfixedpoint_no_linebreak(0, batteryvoltageraw);
+		lib_serial_sendstring(0, "=========================================\r\n");
+		lib_timers_delaymilliseconds(2000);
+	#endif
 #endif
-
     // set the default i2c speed to 400 kHz.  If a device needs to slow it down, it can, but it should set it back.
     lib_i2c_setclockspeed(I2C_400_KHZ);
 
@@ -243,6 +266,25 @@ int main(void)
     global.navigationmode = NAVIGATIONMODEOFF;
     global.failsafetimer = lib_timers_starttimer();
 		
+		/*
+		//testcode to see if uart works
+		unsigned int led_state = 0;
+		for (;;) {
+			//lib_serial_sendchar(0, 'H');
+			char x = lib_serial_numcharsavailable(0);
+			//lib_serial_sendchar(0, '0'+x);
+			if (x != 0){
+				lib_serial_sendstring(0, "POWER ON ADC MEASURMENTS:================\r\n");
+			  unsigned char c = lib_serial_getchar(0);
+				lib_serial_sendchar(0, c);
+				lib_serial_sendchar(0, '\r');
+				lib_serial_sendchar(0, '\n');
+			}
+			leds_set(led_state);
+			led_state = 0xFF-led_state;
+			lib_timers_delaymilliseconds(1);
+		}
+		*/
     for (;;) {
 
         // check to see what switches are activated
@@ -549,8 +591,9 @@ int main(void)
             if(isadcchannelref) {
                 bandgapvoltageraw = lib_adc_read_raw();
                 isadcchannelref = false;
-                lib_adc_select_channel(LIB_ADC_CHAN5);
+                lib_adc_select_channel(BATTERY_ADC_CHANNEL);
             } else {
+								//raw voltage is 0.0-1.0 (min to max adc )
                 batteryvoltageraw = lib_adc_read_raw();
                 isadcchannelref = true;
                 lib_adc_select_channel(LIB_ADC_CHANREF);
@@ -569,7 +612,18 @@ int main(void)
                 // Because we call this only every other iteration.
                 // (...alternatively multiply global.timesliver by two).      
 								lib_fp_lowpassfilter(&(global.batteryvoltage), batteryvoltage, global.timesliver, FIXEDPOINTONEOVERONEFOURTH, TIMESLIVEREXTRASHIFT);
-	
+
+							#if (BATTERY_ADC_DEBUG)
+							  lib_serial_sendstring(0, "\r\nBANDGAP=");
+							  serialprintfixedpoint_no_linebreak(0, bandgapvoltageraw);
+								lib_serial_sendstring(0, "  BATTERY RAW=");
+							  serialprintfixedpoint_no_linebreak(0, batteryvoltageraw);
+							  lib_serial_sendstring(0, "  BATTERY=");
+							  serialprintfixedpoint_no_linebreak(0, batteryvoltage);
+								lib_serial_sendstring(0, "  FILTERED BAT=");
+							  serialprintfixedpoint_no_linebreak(0, global.batteryvoltage);
+#endif							
+								
 							  // Update state of isbatterylow flag.
                 if(global.batteryvoltage < FP_BATTERY_UNDERVOLTAGE_LIMIT)
                     isbatterylow = true;
@@ -672,8 +726,6 @@ void defaultusersettings(void)
     // yaw PIDs
 #ifdef USERSETTINGS_PID_PGAIN_YAWINDEX
     usersettings.pid_pgain[YAWINDEX] = USERSETTINGS_PID_PGAIN_YAWINDEX;
-#else
-		usersettings.pid_pgain[YAWINDEX] = 30L << 3;
 #endif
 #ifdef USERSETTINGS_PID_IGAIN_YAWINDEX 
     usersettings.pid_igain[YAWINDEX] = USERSETTINGS_PID_IGAIN_YAWINDEX;
@@ -682,7 +734,6 @@ void defaultusersettings(void)
     usersettings.pid_dgain[YAWINDEX] = USERSETTINGS_PID_DGAIN_YAWINDEX;	
 #endif
 
-		
 		for (int x = 3; x < NUMPIDITEMS; ++x) {
         usersettings.pid_pgain[x] = 0;
         usersettings.pid_igain[x] = 0;
@@ -709,7 +760,7 @@ void defaultusersettings(void)
 #endif
 		
 #ifdef USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX	
-    usersettings.pid_dgain[NAVIGATIONINDEX] = USERSETTINGS_PID_DAGIN_NAVIGATIONINDEX;   
+    usersettings.pid_dgain[NAVIGATIONINDEX] = USERSETTINGS_PID_DGAIN_NAVIGATIONINDEX;   
 #else
 	usersettings.pid_dgain[NAVIGATIONINDEX] = 188L << 8; // .188 on configurator
 #endif
