@@ -117,3 +117,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // general yes/no (used for MOTOR_STOP)
 #define YES 1
 #define NO 0
+
+// EEPROM
+#define NO_EEPROM 0

@@ -64,6 +64,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define STICK_ARM STICK_COMMAND_YAW_HIGH+STICK_COMMAND_ROLL_HIGH+STICK_COMMAND_PITCH_LOW
 //#define STICK_DISARM STICK_COMMAND_YAW_LOW+STICK_COMMAND_ROLL_LOW+STICK_COMMAND_PITCH_LOW
 
+// time in ms the stick command have to persist to take action
+#define STICK_ARM_TIME 1000 //ms
+
 // Choose an aircraft configuration (defaults to QUADX)
 //#define AIRCRAFT_CONFIGURATION QUADX
 
@@ -80,6 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //strange on my copter 115200 does not work becaus rx pin has a pullup or pulldown resistor soldered in -> lower baudrates work
 #define SERIAL_0_BAUD 38400
+//#define SERIAL_0_BAUD 115200
 
 //#define SERIAL_1_BAUD 115200
 //#define SERIAL_2_BAUD 9600
@@ -183,8 +187,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DC_MOTORS
 
 // Uncomment the following line iy you want to use the ADC to monitor the battery voltage
-//#define BATTERY_ADC_CHANNEL NO_ADC
-#define BATTERY_ADC_CHANNEL (1<<2) 
+// #define BATTERY_ADC_CHANNEL NO_ADC
+#define BATTERY_ADC_CHANNEL (1<<2)
 #define BATTERY_ADC_DEBUG 0
 // ADC external reference voltage.
 // In the MINI54 the ADC reference voltage is internally tied to
@@ -226,6 +230,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // set this value higher.
 // Unit: Volt
 #define BATTERY_UNDERVOLTAGE_LIMIT 3.2 // 3.2
+
+// If battery voltage is below BATTTERY_UNDERVOLTAGE_LIMIT for a defined amount of time
+// enables the battery low indicator all the time until battery is replaced
+// 
+#define BATTERY_LOW_TIMER 1000 
 
 // Parameters for leds
 // define the number of LEDs use on the copter otherwise define NO_LEDS
@@ -278,6 +287,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USERSETTINGS_PID_PGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_P(2.7)
 #define USERSETTINGS_PID_IGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_I(0.0)
 #define USERSETTINGS_PID_DGAIN_ALTITUDEINDEX PID_TO_CONFIGURATORVALUE_ALT_D(6.0)
+
 #define USERSETTINGS_PID_PGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_P(2.5)
 #define USERSETTINGS_PID_IGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_I(0.0)
 #define USERSETTINGS_PID_DGAIN_NAVIGATIONINDEX PID_TO_CONFIGURATORVALUE_NAV_D(0.188)
@@ -297,3 +307,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define USERSETTINGS_CHECKBOXUNCRASHABLE
 // #define USERSETTINGS_CHECKBOXHEADFREE
 // #define USERSETTINGS_CHECKBOXYAWHOLD
+
+// Switch to use eeprom
+// EEPROM is not tested or available on all model
+// #define EEPROM NO_EEPROM
+// Warning just define any size
+#define EEPROM_SIZE 1024

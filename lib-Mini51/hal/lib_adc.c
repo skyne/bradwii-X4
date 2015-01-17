@@ -25,6 +25,8 @@ void lib_adc_init(void) {
 	CLK_SetModuleClock(ADC_MODULE,
 	CLK_CLKSEL1_ADC_S_IRC22M,
 	CLK_CLKDIV_ADC(50));
+#else
+		#warning "ADC conversion time is depenend from serial clock speed!"
 #endif
 	
 	ADC_POWER_ON(ADC);
