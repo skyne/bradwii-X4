@@ -663,8 +663,9 @@ lib_serial_sendstring(0, "\r\n");
         if(isbatterylow) {
             // Highest priority: Battery voltage
             // Blink all LEDs slow
-						global.armed ? leds_blink_continuous(LED_ALL, 1000, 500) : leds_blink_continuous(LED_ALL, 500, 1000);
-        }
+						global.armed ? leds_blink_continuous(LED_ALL, 1000, 0) : leds_blink_continuous(LED_ALL, 500, 1000);//500,1000
+					
+				}
 #endif 
 				
 #if (BATTERY_ADC_CHANNEL != NO_ADC)				

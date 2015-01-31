@@ -239,7 +239,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Parameters for leds
 // define the number of LEDs use on the copter otherwise define NO_LEDS
 // #define LEDS NO_LEDS
-#define LEDS 1
+#define LEDS 2
 
 // LED Outputs (1)
 // LEDs FL & FR are tied together
@@ -248,8 +248,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // On the free pads on the PCB a transistor ?PNP? + series resistor
 // and 2x LEDs plus 2x 10Ohms series resistor have to be added.
 #define LED1 LED1_STATE			//0x01
-// #define LED2 LED2_STATE 	//0x02
-// #define LED3 LED3_STATE 	//0x04
+#define LED2 LED2_STATE 	//0x02
+//#define LED3 LED3_STATE 	//0x04
 // #define LED4 LED4_STATE	//0x08
 // #define LED5 LED5_STATE	//0x10
 // #define LED6 LED6_STATE	//0x20
@@ -269,9 +269,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // set default PID settings
 
 // pitch PIDs
-#define USERSETTINGS_PID_PGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_P(1.5)
-#define USERSETTINGS_PID_IGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_I(0.015)
-#define USERSETTINGS_PID_DGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_D(20.0)
+#define USERSETTINGS_PID_PGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_P(1.5) //1.5
+#define USERSETTINGS_PID_IGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_I(0.015) //0.015
+#define USERSETTINGS_PID_DGAIN_PITCHINDEX PID_TO_CONFIGURATORVALUE_D(20.0) //20.0
  
 // roll PIDs
 #define USERSETTINGS_PID_PGAIN_ROLLINDEX PID_TO_CONFIGURATORVALUE_P(1.5)
@@ -294,7 +294,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // Checkbox settings...
 // #define USERSETTINGS_CHECKBOXARM CHECKBOXMASKAUX1HIGH
-// #define USERSETTINGS_CHECKBOXAUTOTHROTTLE
+#define USERSETTINGS_CHECKBOXAUTOTHROTTLE CHECKBOXMASKAUX2LOW
 // #define USERSETTINGS_CHECKBOXALTHOLD
 // #define USERSETTINGS_CHECKBOXCOMPASS
 // #define USERSETTINGS_CHECKBOXPOSITIONHOLD

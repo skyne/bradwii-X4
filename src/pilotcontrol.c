@@ -39,7 +39,8 @@ static fixedpointnum highpitchandrollrate;
 static fixedpointnum accumulatedyawerror = 0;
 
 void resetpilotcontrol(void)
-{                               // called when switching from navigation control to pilot control or when idling on the ground.
+{   
+	  // called when switching from navigation control to pilot control or when idling on the ground.
     // keeps us from accumulating yaw error that we can't correct.
     desiredcompassheading = global.currentestimatedeulerattitude[YAWINDEX];
     // Same for yaw hold mode
